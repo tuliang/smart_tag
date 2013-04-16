@@ -1,5 +1,8 @@
 require "smart_tag/version"
 
 module SmartTag
-  # Your code goes here...
+  def smart_tag(name, value)
+    puts name 
+    puts value
+  end
 end

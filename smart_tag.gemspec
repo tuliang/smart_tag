@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = SmartTag::VERSION
   gem.authors       = ["tuliang"]
   gem.email         = ["info@tuliang.org"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Tag-it: a jQuery UI plugin}
+  gem.summary       = %q{Tag-it: a jQuery UI plugin}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
