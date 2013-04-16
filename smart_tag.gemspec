@@ -9,8 +9,8 @@ Gem::Specification.new do |gem|
   gem.authors       = ["tuliang"]
   gem.email         = ["info@tuliang.org"]
   gem.description   = %q{Tag-it: a jQuery UI plugin}
-  gem.summary       = %q{Tag-it: a jQuery UI plugin}
-  gem.homepage      = ""
+  gem.summary       = %q{Smart Tag}
+  gem.homepage      = "https://github.com/tuliang/smart_tag"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

@@ -1,8 +1,7 @@
 require "smart_tag/version"
 
 module SmartTag
-  def smart_tag(name, value)
-    puts name 
-    puts value
+  def self.create_tag(name, value)
+    puts "#{name}  #{value}" 
   end
 end
