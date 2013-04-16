@@ -1,9 +1,8 @@
-require 'pathname'
-
-require "smart_tag/version"
+require 'taggingform/engine'
+require 'taggingform/helper'
 
 module SmartTag
-  def self.create_tag(name, value)
-    puts "#{name}  #{value}" 
+  def self.setup
+    yield self
   end
 end
