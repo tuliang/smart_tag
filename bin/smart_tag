@@ -1,2 +1,2 @@
 require "smart_tag"
-SmartTag.assets
+SmartTag.create_tag(ARGV[0], ARGV[1])
