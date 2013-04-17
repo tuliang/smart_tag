@@ -1,4 +1,4 @@
-require "taggingform"
+require "smart_tag"
 require "rails"
 require "action_controller"
 
