@@ -1,5 +1,5 @@
-require 'taggingform/engine'
-require 'taggingform/helper'
+require 'smart_tag/engine'
+require 'smart_tag/helper'
 
 module SmartTag
   def self.setup
