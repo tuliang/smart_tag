@@ -35,6 +35,11 @@ Add this line to your application's app/assets/stylesheets/application.css:
 */
 ```
 
+Add 'smart_tag' class to your collection_select's:
+```ruby
+<%= f.collection_select method, collection, value_method, text_method, options = {},{ :class => 'smart_tag' } %>
+```
+
 ## Contributing
 
 1. Fork it
