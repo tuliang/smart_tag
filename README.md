@@ -1,6 +1,8 @@
 # SmartTag
 
-TODO: Write a gem description
+Tag-it: a jQuery UI plugin
+
+https://github.com/aehlke/tag-it
 
 ## Installation
 
