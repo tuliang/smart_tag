@@ -29,8 +29,10 @@ Add this line to your application's application.js:
 
 Add this line to your application's application.css:
 ```css
+/*
 *= require jquery.ui.all
 *= require smart_tag/jquery.tagit
+*/
 ```
 
 ## Contributing
