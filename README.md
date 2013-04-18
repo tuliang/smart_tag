@@ -20,14 +20,14 @@ Or install it yourself as:
 
 ## Usage
 
-Add this line to your application's application.js:
+Add this line to your application's app/assets/javascripts/application.js:
 ```js
 //= require jquery.ui.all
 //= require smart_tag/tag-it.min
 //= require smart_tag/smart_tag.min
 ```
 
-Add this line to your application's application.css:
+Add this line to your application's app/assets/stylesheets/application.css:
 ```css
 /*
 *= require jquery.ui.all
