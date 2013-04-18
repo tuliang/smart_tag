@@ -1,7 +1,7 @@
 (function($){
   $(document).ready(function() {
 
-    function smart_tag(select) {
+    function SmartTag(select) {
 
       function in_array(array, value) {
         for (var i = array.length - 1; i >= 0; i--) {
@@ -76,7 +76,7 @@
     var selects = $(".smart_tag");
 
     for (var i = selects.length - 1; i >= 0; i--) {
-      smart_tag($(selects[i]));
+      SmartTag($(selects[i]));
     }
 
   });
