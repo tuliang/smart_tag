@@ -21,13 +21,17 @@ Or install it yourself as:
 ## Usage
 
 Add this line to your application's application.js:
-    //= require jquery.ui.all
-    //= require smart_tag/tag-it.min
-    //= require smart_tag/smart_tag.min
+```js
+//= require jquery.ui.all
+//= require smart_tag/tag-it.min
+//= require smart_tag/smart_tag.min
+```
 
 Add this line to your application's application.css:
-    *= require jquery.ui.all
-    *= require smart_tag/jquery.tagit
+```css
+*= require jquery.ui.all
+*= require smart_tag/jquery.tagit
+```
 
 ## Contributing
 
