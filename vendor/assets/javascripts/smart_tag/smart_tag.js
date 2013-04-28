@@ -3,7 +3,7 @@
 
     function SmartTag(select) {
 
-      function in_array(array, value) {
+      function inArray(array, value) {
         for (var i = array.length - 1; i >= 0; i--) {
           if (array[i] == value) {
             return true;
@@ -13,40 +13,102 @@
         return false;
       }
 
-      function get_options_text(options) {
-        var options_text = [];
-        for (var i = options.length - 1; i >= 0; i--) {
-          var text = $(options[i]).text();
+      function clearText(text) {
+        text = text.replace(/\ +/g,""); // 去掉空格
+        text = text.replace(/[ ]/g,""); // 去掉空格
+        return text = text.replace(/[\r\n]/g,""); // 去掉回车换行
+      }
 
-          if (!in_array(options_text, text)) {
-            options_text.push(text);
+      function getOptions(selector) {
+        var options = [];
+        for (var i = selector.length - 1; i >= 0; i--) {
+          var text = clearText($(selector[i]).text());
+
+          if (!inArray(options, text)) {
+            options.push(text);
           }
         }
 
-        return options_text;
+        return options;
       }
 
-      function add_tags(ul) {
-        var selected_options_text = get_options_text(select.children('option:selected'));
-        ul.tagit("removeAll");
-        for (var i = selected_options_text.length - 1; i >= 0; i--) { 
-          ul.tagit("createTag", selected_options_text[i]);
+      function createTags() {
+        for (var i = selected_options.length - 1; i >= 0; i--) { 
+          ul.tagit("createTag", selected_options[i]);
         }
       }
 
-      function ul_to_selected(tags) {
-        for (var i = options.length - 1; i >= 0; i--) {
-          var option = $(options[i]);
-          if (in_array(tags, option.text())) {
-            option.attr("selected", true);
-          } else {
-            option.attr("selected", false);
+      function changeTags() {
+        var new_tags = getOptions(select.children('option:selected'));
+        var tags = ul.tagit("assignedTags")
+
+        // create
+        for (var i = new_tags.length - 1; i >= 0; i--) {
+          if (!inArray(tags, new_tags[i])) {
+            ul.tagit("createTag", new_tags[i]);
+          }
+        }
+
+        // remove
+        for (var i = tags.length - 1; i >= 0; i--) {
+          if (!inArray(new_tags, tags[i])) {
+            ul.tagit("removeTagByLabel", tags[i]);
           }
         }
       }
 
-      var options = select.children('option');
-      var all_options_text = get_options_text(options);
+      function addSelected(tags, option) {
+        if (inArray(tags, clearText(option.text()))) {
+          option.attr("selected", true);
+        } 
+      }
+
+      function removeSelected(tags, option) {
+        if (!inArray(tags, clearText(option.text()))) {
+          option.attr("selected", false);
+        } 
+      }
+
+      function changeSelected(tags, method) {
+        var options = select.children('option');
+        for (var i = options.length - 1; i >= 0; i--) {
+          method(tags, $(options[i]));
+        }
+      }
+
+      function ajaxAddTag(add_tag) {
+        var controller = select.attr('controller');
+
+        if (controller) {
+
+          var action = select.attr('action') ? select.attr('action') : 'create';
+          var param = select.attr('param') ? select.attr('param') : 'title';
+          var controllers = select.attr('controllers') ? select.attr('controllers') : controller+'s';
+
+          var url = '/'+controllers+'/'+action;
+          var data = {};
+          data[controller+'['+param+']'] = add_tag;
+
+          $.ajax({
+            url: url,
+            dataType: "json",
+            type: "POST",
+            data: data,
+            success: function(json){
+              if (json) {
+                select.prepend('<option selected="selected" value="'+json.id+'">'+add_tag+'</option>');
+              } else {
+                console.log("josn is null");
+              }
+            }
+          });
+        } else {
+          console.log("select's controller param is null");
+        }
+      }
+
+      var all_options = getOptions(select.children('option'));
+      var selected_options = getOptions(select.children('option:selected'));
       var ul = $('<ul class="' + select.attr('id') + '_smart_tag"></ul>');
 
       select.before(ul);
@@ -57,19 +119,26 @@
       });
 
       ul.tagit({
-        availableTags: all_options_text,
+        availableTags: all_options,
         afterTagAdded: function(event, ui) {
-          ul_to_selected(ul.tagit("assignedTags"));
+          var add_tag = ui.tagLabel;
+          all_options = getOptions(select.children('option'));
+
+          if (inArray(all_options, add_tag)) {
+            changeSelected(ul.tagit("assignedTags"), addSelected);   
+          } else {
+            ajaxAddTag(add_tag);
+          }
         },
         afterTagRemoved: function(event, ui) {
-          ul_to_selected(ul.tagit("assignedTags"));
+          changeSelected(ul.tagit("assignedTags"), removeSelected);
         }
       });
 
-      add_tags(ul);
+      createTags();
 
       select.change(function(){
-        add_tags(ul);
+        changeTags();
       });
     }
 
