@@ -140,14 +140,18 @@
                 this.options.autocomplete.source = function(search, showChoices) {
                     var filter = search.term.toLowerCase();
                     var choices = $.grep(this.options.availableTags, function(element) {
+                        //console.log(element.toLowerCase().indexOf(filter));
                         // match all
-                        return (element.toLowerCase().indexOf(filter) > 0);
+                        return (element.toLowerCase().indexOf(filter) >= 0);
                     });
                     if (!this.options.allowDuplicates) {
                         choices = this._subtractArray(choices, this.assignedTags());
                     }
+                    choices.sort(function(a, b) {
+                        return a.toLowerCase().indexOf(filter) - b.toLowerCase().indexOf(filter);
+                    });
                     
-                    showChoices(choices.reverse());
+                    showChoices(choices);
                 };
             }
 
