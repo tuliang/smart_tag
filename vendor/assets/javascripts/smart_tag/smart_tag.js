@@ -118,6 +118,7 @@
       });
 
       ul.tagit({
+        allowSpaces: true,
         availableTags: all_options,
         afterTagAdded: function(event, ui) {
           var add_tag = ui.tagLabel;
