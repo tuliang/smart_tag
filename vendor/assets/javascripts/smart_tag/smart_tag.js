@@ -14,9 +14,8 @@
       }
 
       function clearText(text) {
-        text = text.replace(/\ +/g,""); // 去掉空格
-        text = text.replace(/[ ]/g,""); // 去掉空格
-        return text = text.replace(/[\r\n]/g,""); // 去掉回车换行
+        // \s 匹配任何空白字符，包括空格、制表符、换页符等等。等价于[ \f\n\r\t\v]。
+        return text.replace(/^\s+|\s+$/g, ""); // 去掉任何空白字符
       }
 
       function getOptions(selector) {
