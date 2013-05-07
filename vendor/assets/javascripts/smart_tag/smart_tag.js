@@ -1,9 +1,11 @@
 (function($){
   $(document).ready(function() {
 
-    function SmartTag(select) {
+    function Base(select) {
+      var that = {};
+      that.select = select;
 
-      function inArray(array, value) {
+      that.inArray = function(array, value) {
         for (var i = array.length - 1; i >= 0; i--) {
           if (array[i] == value) {
             return true;
@@ -11,78 +13,104 @@
         }
 
         return false;
-      }
+      };
 
-      function clearText(text) {
+      that.clearText = function(text) {
         // \s 匹配任何空白字符，包括空格、制表符、换页符等等。等价于[ \f\n\r\t\v]。
         return text.replace(/^\s+|\s+$/g, ""); // 去掉开头或结尾的任何空白字符
-      }
+      };
 
-      function getOptions(selector) {
+      that.getOptions = function(selector) {
         var options = [];
         for (var i = selector.length - 1; i >= 0; i--) {
-          var text = clearText($(selector[i]).text());
+          var text = that.clearText($(selector[i]).text());
 
-          if (!inArray(options, text)) {
+          if (!that.inArray(options, text)) {
             options.push(text);
           }
         }
 
         return options;
-      }
+      };
 
-      function createTags() {
-        for (var i = selected_options.length - 1; i >= 0; i--) { 
-          ul.tagit("createTag", selected_options[i]);
+      that.createTags = function() {
+        for (var i = that.selected_options.length - 1; i >= 0; i--) { 
+          that.ul.tagit("createTag", that.selected_options[i]);
         }
-      }
+      };
 
-      function changeTags() {
-        var new_tags = getOptions(select.children('option:selected'));
-        var tags = ul.tagit("assignedTags")
+      that.changeTags = function() {
+        var new_tags = that.getOptions(that.select.children('option:selected'));
+        var tags = that.ul.tagit("assignedTags")
 
         // remove
         for (var i = tags.length - 1; i >= 0; i--) {
-          if (!inArray(new_tags, tags[i])) {
-            ul.tagit("removeTagByLabel", tags[i]);
+          if (!that.inArray(new_tags, tags[i])) {
+            that.ul.tagit("removeTagByLabel", tags[i]);
           }
         }
 
         // create
         for (var i = new_tags.length - 1; i >= 0; i--) {
-          if (!inArray(tags, new_tags[i])) {
-            ul.tagit("createTag", new_tags[i]);
+          if (!that.inArray(tags, new_tags[i])) {
+            that.ul.tagit("createTag", new_tags[i]);
           }
         }
-      }
+      };
 
-      function addSelected(tags, option) {
-        if (inArray(tags, clearText(option.text()))) {
+      that.addSelected = function(tags, option) {
+        if (that.inArray(tags, that.clearText(option.text()))) {
           option.attr("selected", true);
         } 
-      }
+      };
 
-      function removeSelected(tags, option) {
-        if (!inArray(tags, clearText(option.text()))) {
+      that.removeSelected = function(tags, option) {
+        if (!that.inArray(tags, that.clearText(option.text()))) {
           option.attr("selected", false);
         } 
-      }
+      };
 
-      function changeSelected(tags, method) {
-        var options = select.children('option');
+      that.changeSelected = function(tags, method) {
+        var options = that.select.children('option');
         for (var i = options.length - 1; i >= 0; i--) {
           method(tags, $(options[i]));
         }
-      }
+      };
 
-      function ajaxAddTag(add_tag) {
-        var controller = select.attr('controller');
+      that.all_options = that.getOptions(select.children('option'));
+      that.selected_options = that.getOptions(select.children('option:selected'));
+      that.ul = $('<ul></ul>');
+
+      select.before(that.ul);
+
+      that.ul.css({
+        'margin-left': '0px',
+        'width': '488px'
+      });
+
+      that.select.change(function(){
+        that.changeTags();
+      });
+
+      that.start = function() {
+        that.createTags();
+      };
+
+      return that;
+    }
+
+    function SmartTag(select) {
+
+      var that = Base(select);
+
+      that.ajaxAddTag = function(add_tag) {
+        var controller = that.select.attr('controller');
 
         if (controller) {
 
-          var action = select.attr('action') ? select.attr('action') : 'create';
-          var param = select.attr('param') ? select.attr('param') : 'title';
-          var controllers = select.attr('controllers') ? select.attr('controllers') : controller+'s';
+          var action = that.select.attr('action') ? that.select.attr('action') : 'create';
+          var param = that.select.attr('param') ? that.select.attr('param') : 'title';
+          var controllers = that.select.attr('controllers') ? that.select.attr('controllers') : controller+'s';
 
           var url = '/'+controllers+'/'+action;
           var data = {};
@@ -104,48 +132,83 @@
         } else {
           console.log("select's controller param is null");
         }
-      }
+      };
 
-      var all_options = getOptions(select.children('option'));
-      var selected_options = getOptions(select.children('option:selected'));
-      var ul = $('<ul class="' + select.attr('id') + '_smart_tag"></ul>');
-
-      select.before(ul);
-
-      ul.css({
-        'margin-left': '0px',
-        'width': '488px'
-      });
-
-      ul.tagit({
+      that.ul.tagit({
         allowSpaces: true,
-        availableTags: all_options,
+        availableTags: that.all_options,
         afterTagAdded: function(event, ui) {
           var add_tag = ui.tagLabel;
-          all_options = getOptions(select.children('option'));
+          all_options = that.getOptions(that.select.children('option'));
 
-          if (inArray(all_options, add_tag)) {
-            changeSelected(ul.tagit("assignedTags"), addSelected);   
+          if (that.inArray(all_options, add_tag)) {
+            that.changeSelected(that.ul.tagit("assignedTags"), that.addSelected);   
           } else {
-            ajaxAddTag(add_tag);
+            that.ajaxAddTag(add_tag);
           }
         },
         afterTagRemoved: function(event, ui) {
-          changeSelected(ul.tagit("assignedTags"), removeSelected);
+          that.changeSelected(that.ul.tagit("assignedTags"), that.removeSelected);
         }
       });
 
-      createTags();
-
-      select.change(function(){
-        changeTags();
-      });
+      return that;
     }
 
-    var selects = $(".smart_tag");
+    var smart_tags = $(".smart_tag");
 
-    for (var i = selects.length - 1; i >= 0; i--) {
-      SmartTag($(selects[i]));
+    for (var i = smart_tags.length - 1; i >= 0; i--) {
+      var item = SmartTag($(smart_tags[i]));
+      item.start();
+    }
+
+    function SingleChoice(select) {
+      var that = Base(select);
+
+      that.ul.tagit({
+        allowSpaces: true,
+        availableTags: that.all_options,
+        tagLimit: 1,
+        afterTagAdded: function(event, ui) {
+          var add_tag = ui.tagLabel;
+          all_options = that.getOptions(that.select.children('option'));
+
+          if (that.inArray(all_options, add_tag)) {
+            that.changeSelected(that.ul.tagit("assignedTags"), that.addSelected);  
+            that.ul.parents(".control-group").removeClass("error");
+            that.ul.parents(".control-group").addClass("success");
+            that.ul.parents(".control-group").find('.help-inline').text("Success!");
+          }else {
+            that.ul.tagit("removeAll");
+            that.ul.parents(".control-group").removeClass("success");
+            that.ul.parents(".control-group").addClass("error");
+            that.ul.parents(".control-group").find('.help-inline').text("You should choice one career.");
+          }
+          
+
+          if(that.ul.tagit("assignedTags").length == 1){
+            that.ul.find(".ui-autocomplete-input").attr('disabled', 'disabled');
+            that.select.focus();
+          }
+        },
+        afterTagRemoved: function(event, ui) {
+
+          that.changeSelected(that.ul.tagit("assignedTags"), that.removeSelected);
+
+          if (that.ul.tagit("assignedTags").length < 1) {
+            that.ul.find(".ui-autocomplete-input").removeAttr('disabled');
+          }
+        }
+      });
+
+      return that;
+    }
+
+    var single_choices = $(".single_choice");
+
+    for (var i = single_choices.length - 1; i >= 0; i--) {
+      var item = SingleChoice($(single_choices[i]));
+      item.start();
     }
 
   });
