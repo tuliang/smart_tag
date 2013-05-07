@@ -1,7 +1,7 @@
 (function($){
   $(document).ready(function() {
 
-    function SmartTag(select) {
+    function SingleChoice(select) {
 
       function inArray(array, value) {
         for (var i = array.length - 1; i >= 0; i--) {
@@ -39,21 +39,8 @@
 
       function changeTags() {
         var new_tags = getOptions(select.children('option:selected'));
-        var tags = ul.tagit("assignedTags")
-
-        // create
-        for (var i = new_tags.length - 1; i >= 0; i--) {
-          if (!inArray(tags, new_tags[i])) {
-            ul.tagit("createTag", new_tags[i]);
-          }
-        }
-
-        // remove
-        for (var i = tags.length - 1; i >= 0; i--) {
-          if (!inArray(new_tags, tags[i])) {
-            ul.tagit("removeTagByLabel", tags[i]);
-          }
-        }
+        ul.tagit("removeAll");
+        ul.tagit("createTag", new_tags[0]);
       }
 
       function addSelected(tags, option) {
@@ -75,40 +62,9 @@
         }
       }
 
-      function ajaxAddTag(add_tag) {
-        var controller = select.attr('controller');
-
-        if (controller) {
-
-          var action = select.attr('action') ? select.attr('action') : 'create';
-          var param = select.attr('param') ? select.attr('param') : 'title';
-          var controllers = select.attr('controllers') ? select.attr('controllers') : controller+'s';
-
-          var url = '/'+controllers+'/'+action;
-          var data = {};
-          data[controller+'['+param+']'] = add_tag;
-
-          $.ajax({
-            url: url,
-            dataType: "json",
-            type: "POST",
-            data: data,
-            success: function(json){
-              if (json) {
-                select.prepend('<option selected="selected" value="'+json.id+'">'+add_tag+'</option>');
-              } else {
-                console.log("josn is null");
-              }
-            }
-          });
-        } else {
-          console.log("select's controller param is null");
-        }
-      }
-
       var all_options = getOptions(select.children('option'));
       var selected_options = getOptions(select.children('option:selected'));
-      var ul = $('<ul class="' + select.attr('id') + '_smart_tag"></ul>');
+      var ul = $('<ul class="' + select.attr('id') + '_single_choice"></ul>');
 
       select.before(ul);
 
@@ -120,18 +76,31 @@
       ul.tagit({
         allowSpaces: true,
         availableTags: all_options,
+        tagLimit: 1,
         afterTagAdded: function(event, ui) {
           var add_tag = ui.tagLabel;
           all_options = getOptions(select.children('option'));
 
           if (inArray(all_options, add_tag)) {
-            changeSelected(ul.tagit("assignedTags"), addSelected);   
-          } else {
-            ajaxAddTag(add_tag);
+            changeSelected(ul.tagit("assignedTags"), addSelected);  
+            ul.parents(".control-group").removeClass("error");
+            ul.parents(".control-group").addClass("success");
+            ul.parents(".control-group").find('.help-inline').text("Success!");
+          }else {
+            ul.tagit("removeAll");
+            ul.parents(".control-group").removeClass("success");
+            ul.parents(".control-group").addClass("error");
+            ul.parents(".control-group").find('.help-inline').text("You should choice one career.");
+          }
+
+          if(ul.tagit("assignedTags").length == 1){
+            ul.find(".ui-autocomplete-input").attr('disabled', 'disabled');
+            select.focus();
           }
         },
         afterTagRemoved: function(event, ui) {
           changeSelected(ul.tagit("assignedTags"), removeSelected);
+          ul.find(".ui-autocomplete-input").removeAttr('disabled');
         }
       });
 
@@ -142,10 +111,10 @@
       });
     }
 
-    var selects = $(".smart_tag");
+    var selects = $(".single_choice");
 
     for (var i = selects.length - 1; i >= 0; i--) {
-      SmartTag($(selects[i]));
+      SingleChoice($(selects[i]));
     }
 
   });
