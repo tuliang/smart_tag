@@ -39,8 +39,21 @@
 
       function changeTags() {
         var new_tags = getOptions(select.children('option:selected'));
-        ul.tagit("removeAll");
-        ul.tagit("createTag", new_tags[0]);
+        var tags = ul.tagit("assignedTags")
+
+        // remove
+        for (var i = tags.length - 1; i >= 0; i--) {
+          if (!inArray(new_tags, tags[i])) {
+            ul.tagit("removeTagByLabel", tags[i]);
+          }
+        }
+
+        // create
+        for (var i = new_tags.length - 1; i >= 0; i--) {
+          if (!inArray(tags, new_tags[i])) {
+            ul.tagit("createTag", new_tags[i]);
+          }
+        }
       }
 
       function addSelected(tags, option) {
@@ -92,6 +105,7 @@
             ul.parents(".control-group").addClass("error");
             ul.parents(".control-group").find('.help-inline').text("You should choice one career.");
           }
+          
 
           if(ul.tagit("assignedTags").length == 1){
             ul.find(".ui-autocomplete-input").attr('disabled', 'disabled');
@@ -99,8 +113,12 @@
           }
         },
         afterTagRemoved: function(event, ui) {
+
           changeSelected(ul.tagit("assignedTags"), removeSelected);
-          ul.find(".ui-autocomplete-input").removeAttr('disabled');
+
+          if (ul.tagit("assignedTags").length < 1) {
+            ul.find(".ui-autocomplete-input").removeAttr('disabled');
+          }
         }
       });
 

@@ -41,17 +41,17 @@
         var new_tags = getOptions(select.children('option:selected'));
         var tags = ul.tagit("assignedTags")
 
-        // create
-        for (var i = new_tags.length - 1; i >= 0; i--) {
-          if (!inArray(tags, new_tags[i])) {
-            ul.tagit("createTag", new_tags[i]);
-          }
-        }
-
         // remove
         for (var i = tags.length - 1; i >= 0; i--) {
           if (!inArray(new_tags, tags[i])) {
             ul.tagit("removeTagByLabel", tags[i]);
+          }
+        }
+
+        // create
+        for (var i = new_tags.length - 1; i >= 0; i--) {
+          if (!inArray(tags, new_tags[i])) {
+            ul.tagit("createTag", new_tags[i]);
           }
         }
       }
