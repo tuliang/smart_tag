@@ -105,7 +105,6 @@
       that.is_add = that.select.attr('is_add') ? that.select.attr('is_add') : true;
 
       that.ajaxAddTag = function(add_tag) {
-        console.log('ajaxAddTag');
         var controller = that.select.attr('controller');
 
         if (controller) {
