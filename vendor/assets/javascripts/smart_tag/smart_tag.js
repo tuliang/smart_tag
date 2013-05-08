@@ -102,6 +102,7 @@
     function SmartTag(select) {
 
       var that = Base(select);
+      that.isAdd = that.select.attr('is_add') ? that.select.attr('is_add') : true;
 
       that.ajaxAddTag = function(add_tag) {
         var controller = that.select.attr('controller');
@@ -141,10 +142,14 @@
           var add_tag = ui.tagLabel;
           all_options = that.getOptions(that.select.children('option'));
 
+          that.ul.parents(".control-group").removeClass("error");
+
           if (that.inArray(all_options, add_tag)) {
             that.changeSelected(that.ul.tagit("assignedTags"), that.addSelected);   
-          } else {
+          } else if (that.isAdd) {
             that.ajaxAddTag(add_tag);
+          } else {
+            that.ul.parents(".control-group").addClass("error");
           }
         },
         afterTagRemoved: function(event, ui) {
