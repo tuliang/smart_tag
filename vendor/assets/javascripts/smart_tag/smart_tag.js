@@ -4,6 +4,7 @@
     function Base(select) {
       var that = {};
       that.select = select;
+      that.is_start = false;
 
       that.inArray = function(array, value) {
         for (var i = array.length - 1; i >= 0; i--) {
@@ -94,6 +95,7 @@
 
       that.start = function() {
         that.createTags();
+        that.is_start = true;
       };
 
       return that;
@@ -190,10 +192,12 @@
             that.ul.parents(".control-group").addClass("error");
             that.ul.parents(".control-group").find('.help-inline').text("You should choice one career.");
           }
-          
 
           if(that.ul.tagit("assignedTags").length == 1){
             that.ul.find(".ui-autocomplete-input").attr('disabled', 'disabled');
+            if (true === that.is_start) {
+              that.select.focus();
+            }
           }
         },
         afterTagRemoved: function(event, ui) {
