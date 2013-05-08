@@ -194,7 +194,6 @@
 
           if(that.ul.tagit("assignedTags").length == 1){
             that.ul.find(".ui-autocomplete-input").attr('disabled', 'disabled');
-            that.select.focus();
           }
         },
         afterTagRemoved: function(event, ui) {
