@@ -192,7 +192,7 @@
               that.ul.parents(".control-group").addClass("success");
               that.ul.parents(".control-group").find('.help-inline').text("Success!");
             } else {
-              that.ul.parents(".control-group").find('.help-inline').html(nil_params+'is null. <a href="/careers/'+id+'/edit">Edit '+nil_params+'</a>');
+              that.ul.parents(".control-group").find('.help-inline').html(nil_params+' is null. <a href="/careers/'+id+'/edit">Edit '+add_tag+'</a>');
             }
             
           }else {
