@@ -186,14 +186,13 @@
           if (that.inArray(all_options, add_tag)) {
             that.changeSelected(that.ul.tagit("assignedTags"), that.addSelected);  
             var id = $(select.children('option:selected')[0]).val();
-            var is_full = $('#careers_'+id).attr('is_full');
-            console.log(is_full);
-            if ('true' == is_full) {
+            var nil_params = $('#careers_'+id).attr('nil_params');
+            if ('' == nil_params) {
               that.ul.parents(".control-group").removeClass("error");
               that.ul.parents(".control-group").addClass("success");
               that.ul.parents(".control-group").find('.help-inline').text("Success!");
             } else {
-              that.ul.parents(".control-group").find('.help-inline').html('<a href="/careers/'+id+'/edit">Edit '+add_tag+'</a>');
+              that.ul.parents(".control-group").find('.help-inline').html(nil_params+'is null. <a href="/careers/'+id+'/edit">Edit '+nil_params+'</a>');
             }
             
           }else {
