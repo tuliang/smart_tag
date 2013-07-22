@@ -86,11 +86,6 @@
 
       select.before(that.ul);
 
-      that.ul.css({
-        'margin-left': '0px',
-        'width': '488px'
-      });
-
       that.select.change(function(){
         that.changeTags();
       });
