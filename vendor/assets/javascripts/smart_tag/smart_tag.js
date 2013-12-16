@@ -185,7 +185,7 @@
             if ('' == nil_params) {
               that.ul.parents(".control-group").removeClass("error");
               that.ul.parents(".control-group").addClass("success");
-              that.ul.parents(".control-group").find('.help-inline').text("Success!");
+              that.ul.parents(".control-group").find('.help-inline').html("Success!"+' <a href="/careers/'+id+'/edit">Edit '+add_tag+'</a>');
             } else {
               that.ul.parents(".control-group").find('.help-inline').html(nil_params+' <a href="/careers/'+id+'/edit">Edit '+add_tag+'</a>');
             }
