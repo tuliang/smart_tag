@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'jquery-ui-rails'
+require 'jquery-ui-sass-rails'
 require "smart_tag"
 require "rails"
 require "action_controller"
