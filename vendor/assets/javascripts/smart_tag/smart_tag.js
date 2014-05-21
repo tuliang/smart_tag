@@ -112,7 +112,7 @@
           var param = that.select.attr('param') ? that.select.attr('param') : 'title';
           var controllers = that.select.attr('controllers') ? that.select.attr('controllers') : controller+'s';
 
-          var url = '/'+controllers+'/'+action;
+          var url = that.select.attr('url');
           var data = {};
           data[controller+'['+param+']'] = add_tag;
 
